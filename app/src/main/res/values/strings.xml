@@ -1,0 +1,13 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Popular Movies</string>
+    <string name="internet_error">Internet is not available.</string>
+    <string name="action_popular">Popular Movies</string>
+    <string name="action_top_rated">Highest Rated Movies</string>
+    <string name="movies">Movies</string>
+    <string name="popular">Popular</string>
+    <string name="top_rated">Highest Rated</string>
+
+    <string name="ratings">(
+        <xliff:g id="vote_average">%1.1f</xliff:g>/10)
+    </string>
+</resources>
