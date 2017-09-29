@@ -7,6 +7,8 @@ import com.randeep.popularmovies.BuildConfig;
 import com.randeep.popularmovies.Utils.Constants;
 import com.randeep.popularmovies.bean.Movie;
 import com.randeep.popularmovies.bean.MovieResult;
+import com.randeep.popularmovies.bean.ReviewResult;
+import com.randeep.popularmovies.bean.TrailerResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +79,42 @@ public class NetworkCall {
             }
 
 
+        });
+    }
+
+
+    public void fetchTrailerList(int movieId){
+
+        Call<TrailerResult> trailerResultCall = movieApi.getTrailerList(movieId, BuildConfig.API_KEY);
+
+        trailerResultCall.enqueue(new Callback<TrailerResult>() {
+            @Override
+            public void onResponse(Call<TrailerResult> call, Response<TrailerResult> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<TrailerResult> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    public void fetchReviewList(int movieId){
+
+        Call<ReviewResult> reviewResultCall = movieApi.getReviewList(movieId, BuildConfig.API_KEY);
+
+        reviewResultCall.enqueue(new Callback<ReviewResult>() {
+            @Override
+            public void onResponse(Call<ReviewResult> call, Response<ReviewResult> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ReviewResult> call, Throwable t) {
+
+            }
         });
     }
 }
