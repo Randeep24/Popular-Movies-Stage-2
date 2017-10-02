@@ -2,6 +2,7 @@ package com.randeep.popularmovies.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
             title = itemView.findViewById(R.id.trailer_name);
             playIcon = itemView.findViewById(R.id.play_icon);
 
+            Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "icomoon.ttf");
+            playIcon.setTypeface(customFont);
             itemView.setOnClickListener(this);
         }
 

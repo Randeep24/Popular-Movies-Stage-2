@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -75,6 +76,11 @@ public class DetailActivity extends AppCompatActivity implements NetworkCall.Upd
 
         reviewAdapter = new ReviewAdapter();
         mBinding.reviewList.setAdapter(reviewAdapter);
+
+        Typeface icomoonFont = Typeface.createFromAsset(getAssets(), "icomoon.ttf");
+        mBinding.favorite.setTypeface(icomoonFont);
+        mBinding.share.setTypeface(icomoonFont);
+
 
         Picasso.with(this).load("http://image.tmdb.org/t/p/w780" + movie.getBackgroundPosterPath()).into(mBinding.backgroundImage);
         Picasso.with(this).load("http://image.tmdb.org/t/p/w185" + movie.getPosterPath()).into(mBinding.moviePoster);

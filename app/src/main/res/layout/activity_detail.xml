@@ -66,7 +66,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="@dimen/share_icon_margin_right"
                         android:layout_marginTop="@dimen/share_icon_margin_top"
-                        android:fontFamily="@font/icomoon"
                         android:text="@string/share_icon"
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/share_icon_size" />
@@ -79,7 +78,6 @@
                         android:layout_marginRight="@dimen/fav_icon_margin_right"
                         android:layout_marginTop="@dimen/fav_icon_margin_top"
                         android:layout_toLeftOf="@id/share"
-                        android:fontFamily="@font/icomoon"
                         android:text="@string/fav_icon"
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/fav_icon_size" />
