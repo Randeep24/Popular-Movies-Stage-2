@@ -85,7 +85,11 @@ public class FavoriteMovieListAdapter extends RecyclerView.Adapter<FavoriteMovie
         mCursor.moveToPosition(position);
 
         String imageUrl = "http://image.tmdb.org/t/p/w185" + mCursor.getString(COLUMN_POSTER_PATH);
-        Picasso.with(mContext).load(imageUrl).into(holder.movieImageView);
+        Picasso.with(mContext)
+                .load(imageUrl)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error_placeholder)
+                .into(holder.movieImageView);
     }
 
     @Override

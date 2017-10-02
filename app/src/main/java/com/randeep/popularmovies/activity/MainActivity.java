@@ -31,6 +31,7 @@ import com.randeep.popularmovies.bean.Movie;
 import com.randeep.popularmovies.network.NetworkCall;
 import com.randeep.popularmovies.utils.ToolbarShapeBackground;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.randeep.popularmovies.utils.Constants.FAVORITE;
@@ -41,11 +42,12 @@ import static com.randeep.popularmovies.utils.Constants.POPULAR;
 import static com.randeep.popularmovies.utils.Constants.SORT_TYPE;
 
 public class MainActivity extends AppCompatActivity implements
-        NetworkCall.UpdateMovieListView, MoviesListAdapter.MovieListItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+        NetworkCall.UpdateMovieListView, MoviesListAdapter.MovieListItemClickListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private MoviesListAdapter moviesListAdapter;
     private FavoriteMovieListAdapter favoriteMovieListAdapter;
-    private List<Movie> movieList;
+    private ArrayList<Movie> movieList = new ArrayList<>();
     private int spanCount = 2;
 
     private static final int FAVORITE_LOADER_ID = 24;
@@ -53,8 +55,7 @@ public class MainActivity extends AppCompatActivity implements
     private int sortingType = POPULAR;
 
     private ActivityMainBinding mBinding;
-
-
+    private GridLayoutManager gridLayoutManager;
 
 
 
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements
             spanCount = 3;
         }
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, spanCount);
+        gridLayoutManager = new GridLayoutManager(this, spanCount);
         mBinding.moviesList.setLayoutManager(gridLayoutManager);
 
         moviesListAdapter = new MoviesListAdapter(this);
@@ -83,25 +84,36 @@ public class MainActivity extends AppCompatActivity implements
 
         favoriteMovieListAdapter = new FavoriteMovieListAdapter(this);
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             sortingType = savedInstanceState.getInt(SORT_TYPE);
+            if (sortingType != FAVORITE) {
+
+                movieList = savedInstanceState.getParcelableArrayList("MOVIE_LIST");
+
+
+                if (sortingType == HIGHEST_RATED_MOVIES)
+                    mBinding.title.setText(getString(R.string.top_rated));
+
+                updateList(movieList);
+            }
+        } else {
+
+            switch (sortingType) {
+                case POPULAR:
+                    new NetworkCall().fetchMoviesList(this, Constants.POPULAR_MOVIES);
+                    break;
+                case HIGHEST_RATED_MOVIES:
+                    mBinding.title.setText(getString(R.string.top_rated));
+                    new NetworkCall().fetchMoviesList(this, Constants.HIGHEST_RATED);
+                    break;
+                case FAVORITE:
+                    mBinding.title.setText(getString(R.string.favorite));
+                    getSupportLoaderManager().initLoader(FAVORITE_LOADER_ID, null, this);
+                    break;
+            }
+
+
         }
-
-        switch (sortingType){
-            case POPULAR:
-                new NetworkCall().fetchMoviesList(this, Constants.POPULAR_MOVIES);
-                break;
-            case HIGHEST_RATED_MOVIES:
-                mBinding.title.setText(getString(R.string.top_rated));
-                new NetworkCall().fetchMoviesList(this, Constants.HIGHEST_RATED);
-                break;
-            case FAVORITE:
-                mBinding.title.setText(getString(R.string.favorite));
-                getSupportLoaderManager().initLoader(FAVORITE_LOADER_ID, null, this);
-                break;
-        }
-
-
     }
 
 
@@ -109,8 +121,10 @@ public class MainActivity extends AppCompatActivity implements
     public void updateList(List<Movie> movieList) {
         mBinding.progressBar.setVisibility(View.GONE);
         mBinding.moviesList.setVisibility(View.VISIBLE);
-        this.movieList = movieList;
+        this.movieList = (ArrayList<Movie>) movieList;
         moviesListAdapter.setMovieList(movieList);
+
+
     }
 
     @Override
@@ -163,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void checkPreviousSorting() {
-        if (sortingType == FAVORITE){
+        if (sortingType == FAVORITE) {
             getSupportLoaderManager().destroyLoader(FAVORITE_LOADER_ID);
             mBinding.moviesList.setAdapter(moviesListAdapter);
         }
@@ -210,15 +224,18 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putInt(SORT_TYPE, sortingType);
+        outState.putParcelableArrayList("MOVIE_LIST", movieList);
+
         super.onSaveInstanceState(outState);
-        outState.putInt(SORT_TYPE,sortingType);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (sortingType == FAVORITE){
-            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID,null,this);
+        if (sortingType == FAVORITE) {
+            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
         }
     }
 }

@@ -51,7 +51,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
             String urlSource = trailerList.get(position).getYoutubeLink();
             final String BASE_URL = "http://img.youtube.com/vi/";
             String imageUrl = BASE_URL + urlSource + "/0.jpg";
-            Picasso.with(itemView.getContext()).load(imageUrl).fit().into(trailerImage);
+            Picasso.with(itemView.getContext())
+                    .load(imageUrl)
+                    .fit()
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error_placeholder)
+                    .into(trailerImage);
         }
 
         @Override

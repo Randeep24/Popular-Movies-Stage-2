@@ -42,8 +42,12 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
 
         void setMovieImage() {
             int position = getAdapterPosition();
-            Picasso.with(itemView.getContext()).load("http://image.tmdb.org/t/p/w185" +
-                    movieList.get(position).getPosterPath()).into(movieImageView);
+            Picasso.with(itemView.getContext())
+                    .load("http://image.tmdb.org/t/p/w185" +
+                    movieList.get(position).getPosterPath())
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error_placeholder)
+                    .into(movieImageView);
         }
 
         @Override
