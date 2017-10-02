@@ -86,4 +86,6 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
         notifyDataSetChanged();
     }
 
+
+
 }

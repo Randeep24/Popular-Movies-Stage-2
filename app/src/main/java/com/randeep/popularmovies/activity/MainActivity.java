@@ -87,35 +87,29 @@ public class MainActivity extends AppCompatActivity implements
 
             mBinding.progressBar.setVisibility(View.GONE);
             sortingType = savedInstanceState.getInt(SORT_TYPE);
-            if (sortingType != FAVORITE) {
 
-                movieList = savedInstanceState.getParcelableArrayList("MOVIE_LIST");
+            movieList = savedInstanceState.getParcelableArrayList("MOVIE_LIST");
 
+            if (sortingType == HIGHEST_RATED_MOVIES)
+                mBinding.title.setText(getString(R.string.top_rated));
 
-                if (sortingType == HIGHEST_RATED_MOVIES)
-                    mBinding.title.setText(getString(R.string.top_rated));
-
+            if (sortingType == FAVORITE){
+                mBinding.title.setText(getString(R.string.favorite));
+                getSupportLoaderManager().initLoader(FAVORITE_LOADER_ID, null, this);
+            }else {
                 moviesListAdapter.setMovieList(movieList);
             }
+
         } else {
 
-            switch (sortingType) {
-                case POPULAR:
-                    new NetworkCall().fetchMoviesList(this, Constants.POPULAR_MOVIES);
-                    break;
-                case HIGHEST_RATED_MOVIES:
-                    mBinding.title.setText(getString(R.string.top_rated));
-                    new NetworkCall().fetchMoviesList(this, Constants.HIGHEST_RATED);
-                    break;
-                case FAVORITE:
-                    mBinding.title.setText(getString(R.string.favorite));
-                    getSupportLoaderManager().initLoader(FAVORITE_LOADER_ID, null, this);
-                    break;
-            }
-
+            new NetworkCall().fetchMoviesList(this, Constants.POPULAR_MOVIES);
 
         }
-    }
+
+
+
+
+}
 
 
     @Override
@@ -212,8 +206,6 @@ public class MainActivity extends AppCompatActivity implements
                 mBinding.moviesList.setAdapter(favoriteMovieListAdapter);
             }
             favoriteMovieListAdapter.swapCursor(data);
-            if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
-            mBinding.moviesList.smoothScrollToPosition(mPosition);
         }
 
     }
@@ -224,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements
             favoriteMovieListAdapter.swapCursor(null);
         }
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -241,4 +234,6 @@ public class MainActivity extends AppCompatActivity implements
             getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
         }
     }
+
+
 }
