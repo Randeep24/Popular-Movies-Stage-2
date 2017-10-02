@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements
     private GridLayoutManager gridLayoutManager;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements
         favoriteMovieListAdapter = new FavoriteMovieListAdapter(this);
 
         if (savedInstanceState != null) {
+
+            mBinding.progressBar.setVisibility(View.GONE);
             sortingType = savedInstanceState.getInt(SORT_TYPE);
             if (sortingType != FAVORITE) {
 
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (sortingType == HIGHEST_RATED_MOVIES)
                     mBinding.title.setText(getString(R.string.top_rated));
 
-                updateList(movieList);
+                moviesListAdapter.setMovieList(movieList);
             }
         } else {
 
@@ -123,7 +124,8 @@ public class MainActivity extends AppCompatActivity implements
         mBinding.moviesList.setVisibility(View.VISIBLE);
         this.movieList = (ArrayList<Movie>) movieList;
         moviesListAdapter.setMovieList(movieList);
-
+        if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
+        mBinding.moviesList.smoothScrollToPosition(mPosition);
 
     }
 
@@ -211,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements
             }
             favoriteMovieListAdapter.swapCursor(data);
             if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
+            mBinding.moviesList.smoothScrollToPosition(mPosition);
         }
 
     }
