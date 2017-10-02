@@ -17,7 +17,7 @@ public class TrailerResult {
     @SerializedName("results")
     private List<Trailer> results = new ArrayList<>();
 
-    public List<Trailer> getMovieDetails(){
+    public List<Trailer> getTrailerResult(){
         return results;
     }
 }

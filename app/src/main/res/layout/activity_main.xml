@@ -1,81 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
     tools:context="com.randeep.popularmovies.activity.MainActivity">
 
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:background="@drawable/toolbar_background" />
+        android:layout_height="@dimen/toolbar_background_height"
+        android:background="@drawable/toolbar_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     <View
+        android:id="@+id/rectangle_shape"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="210dp"
-        android:id="@+id/rectangle_shape"/>
+        android:layout_height="@dimen/white_view_height"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/view" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/main_title_margin_left"
+        android:layout_marginTop="@dimen/main_title_margin_top"
         android:text="@string/popular"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="35dp"
-        android:textSize="30sp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/main_title_size"
         android:textStyle="bold"
-        android:textColor="@android:color/white"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="@dimen/main_title_margin_left" />
 
     <TextView
+        android:id="@+id/movies"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
         android:text="@string/movies"
-        android:layout_marginLeft="35dp"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
+        android:id="@+id/error_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/error_message"
+        android:layout_marginTop="@dimen/error_message_margin_top"
         android:text="@string/internet_error"
-        android:textColor="#000"
-        android:textSize="25sp"
-        android:layout_below="@id/rectangle_shape"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"/>
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/title_size"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rectangle_shape" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/movies_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:layout_marginTop="80dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:visibility="gone"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/movie_list_margin_top"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/rectangle_shape">
+
     <ProgressBar
+        android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progress_bar"
-        android:layout_gravity="center"/>
-    </FrameLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view"/>
 
-</RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

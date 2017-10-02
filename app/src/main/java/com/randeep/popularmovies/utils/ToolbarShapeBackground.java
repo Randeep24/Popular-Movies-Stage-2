@@ -1,4 +1,4 @@
-package com.randeep.popularmovies.Utils;
+package com.randeep.popularmovies.utils;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

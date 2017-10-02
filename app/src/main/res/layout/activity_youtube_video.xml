@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6000000"
+    >
+
+    <fragment
+        android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+        android:id="@+id/youtube_fragment"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"/>
+
+
+    <ImageView
+        android:layout_width="@dimen/cancel_button_size"
+        android:layout_height="@dimen/cancel_button_size"
+        android:padding="@dimen/button_padding"
+        android:id="@+id/cancelImage"
+        android:src="@drawable/ic_action_cancel"/>
+</RelativeLayout>

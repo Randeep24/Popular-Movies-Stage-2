@@ -1,16 +1,14 @@
 package com.randeep.popularmovies.network;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.randeep.popularmovies.BuildConfig;
-import com.randeep.popularmovies.Utils.Constants;
+import com.randeep.popularmovies.bean.Review;
+import com.randeep.popularmovies.bean.Trailer;
+import com.randeep.popularmovies.utils.Constants;
 import com.randeep.popularmovies.bean.Movie;
 import com.randeep.popularmovies.bean.MovieResult;
 import com.randeep.popularmovies.bean.ReviewResult;
 import com.randeep.popularmovies.bean.TrailerResult;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,18 +27,18 @@ public class NetworkCall {
 
     private static final String LOG_TAG = NetworkCall.class.getSimpleName();
 
-    private Retrofit retrofit;
     private MovieApi movieApi;
-    private final UpdateMovieListView mUpdateMovieListView;
+    private UpdateMovieListView mUpdateMovieListView;
+    private UpdateReviewAndTrailerList mUpdateReviewList;
 
-    public NetworkCall(UpdateMovieListView updateMovieListView){
+    public NetworkCall() {
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .readTimeout(Constants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
                 .connectTimeout(Constants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
                 .build();
 
-        retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -48,17 +46,26 @@ public class NetworkCall {
 
         movieApi = retrofit.create(MovieApi.class);
 
-        mUpdateMovieListView = updateMovieListView;
+
     }
 
 
-    public interface UpdateMovieListView{
+    public interface UpdateMovieListView {
         void updateList(List<Movie> movieList);
+
+        void showError();
+    }
+
+    public interface UpdateReviewAndTrailerList {
+        void updateReviewList(List<Review> reviewList);
+        void updateTrailerList(List<Trailer> trailerList);
         void showError();
     }
 
 
-    public void fetchMoviesList(String sortingType){
+    public void fetchMoviesList(UpdateMovieListView updateMovieListView, String sortingType) {
+
+        mUpdateMovieListView = updateMovieListView;
 
         Call<MovieResult> movieResultCall = movieApi.getMoviesList(sortingType, BuildConfig.API_KEY);
 
@@ -68,8 +75,10 @@ public class NetworkCall {
                 MovieResult movieResult = response.body();
                 List<Movie> movieList = movieResult.getMovieDetails();
 
-                if (movieList != null){
+                if (movieList != null) {
                     mUpdateMovieListView.updateList(movieList);
+                }else {
+                    mUpdateMovieListView.showError();
                 }
             }
 
@@ -82,8 +91,14 @@ public class NetworkCall {
         });
     }
 
+    public void fetchTrailerAndReviewList(UpdateReviewAndTrailerList updateReviewAndTrailerList, int movieId){
+        mUpdateReviewList = updateReviewAndTrailerList;
+        fetchTrailerList(movieId);
+        fetchReviewList(movieId);
+    }
+    public void fetchTrailerList(int movieId) {
 
-    public void fetchTrailerList(int movieId){
+
 
         Call<TrailerResult> trailerResultCall = movieApi.getTrailerList(movieId, BuildConfig.API_KEY);
 
@@ -91,17 +106,25 @@ public class NetworkCall {
             @Override
             public void onResponse(Call<TrailerResult> call, Response<TrailerResult> response) {
 
+                TrailerResult trailerResult = response.body();
+                List<Trailer> trailerList = trailerResult.getTrailerResult();
+
+                if (trailerList != null){
+                    mUpdateReviewList.updateTrailerList(trailerList);
+                } else {
+                    mUpdateReviewList.showError();
+                }
             }
 
             @Override
             public void onFailure(Call<TrailerResult> call, Throwable t) {
-
+                mUpdateReviewList.showError();
             }
         });
     }
 
 
-    public void fetchReviewList(int movieId){
+    public void fetchReviewList(int movieId) {
 
         Call<ReviewResult> reviewResultCall = movieApi.getReviewList(movieId, BuildConfig.API_KEY);
 
@@ -109,11 +132,19 @@ public class NetworkCall {
             @Override
             public void onResponse(Call<ReviewResult> call, Response<ReviewResult> response) {
 
+                ReviewResult reviewResult = response.body();
+                List<Review> reviewList = reviewResult.getReviewList();
+
+                if (reviewList != null){
+                    mUpdateReviewList.updateReviewList(reviewList);
+                }else {
+                    mUpdateReviewList.showError();
+                }
             }
 
             @Override
             public void onFailure(Call<ReviewResult> call, Throwable t) {
-
+                mUpdateReviewList.showError();
             }
         });
     }

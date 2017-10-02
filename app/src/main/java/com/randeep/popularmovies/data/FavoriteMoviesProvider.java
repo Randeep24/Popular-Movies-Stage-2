@@ -47,7 +47,7 @@ public class FavoriteMoviesProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
 
-        Cursor cursor;
+        Cursor cursor = null;
 
         switch (uriMatcher.match(uri)){
             case MOVIE:
@@ -73,7 +73,7 @@ public class FavoriteMoviesProvider extends ContentProvider {
                 );
                 break;
         }
-        return null;
+        return cursor;
     }
 
     @Nullable

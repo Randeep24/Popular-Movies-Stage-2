@@ -23,15 +23,16 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
     private List<Movie> movieList;
     private MovieListItemClickListener mMovieListItemClickListener;
 
-    public MoviesListAdapter(MovieListItemClickListener movieListItemClickListener){
+    public MoviesListAdapter(MovieListItemClickListener movieListItemClickListener) {
         movieList = new ArrayList<>();
         mMovieListItemClickListener = movieListItemClickListener;
     }
 
 
-    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView movieImageView;
+
         public MovieViewHolder(View itemView) {
             super(itemView);
             movieImageView = itemView.findViewById(R.id.movie_poster);
@@ -39,9 +40,10 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
 
         }
 
-        void setMovieImage(){
+        void setMovieImage() {
             int position = getAdapterPosition();
-            Picasso.with(itemView.getContext()).load(movieList.get(position).getPosterPath()).into(movieImageView);
+            Picasso.with(itemView.getContext()).load("http://image.tmdb.org/t/p/w185" +
+                    movieList.get(position).getPosterPath()).into(movieImageView);
         }
 
         @Override
@@ -51,7 +53,7 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
     }
 
 
-    public interface MovieListItemClickListener{
+    public interface MovieListItemClickListener {
         void movieListItemClicked(int position);
     }
 
@@ -75,7 +77,7 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
         return movieList.size();
     }
 
-    public void setMovieList(List<Movie> movies){
+    public void setMovieList(List<Movie> movies) {
         movieList = movies;
         notifyDataSetChanged();
     }

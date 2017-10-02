@@ -14,7 +14,7 @@ public class ReviewResult {
     @SerializedName("results")
     private List<Review> results = new ArrayList<>();
 
-    public List<Review> getMovieDetails(){
+    public List<Review> getReviewList(){
         return results;
     }
 }

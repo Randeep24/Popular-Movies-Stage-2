@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName;
  * Created by Randeeppulp on 9/27/17.
  */
 
-class Trailer {
+public class Trailer {
 
     @SerializedName("id")
-    int trailerId;
+    String trailerId;
 
     @SerializedName("key")
     String youtubeLink;
@@ -20,12 +20,12 @@ class Trailer {
     @SerializedName("type")
     String trailerType;
 
-    public int getTrailerId(){
+    public String getTrailerId(){
         return trailerId;
     }
 
     public String getYoutubeLink(){
-        return "https://youtu.be/" + youtubeLink;
+        return youtubeLink;
     }
 
     public String getTrailerName(){

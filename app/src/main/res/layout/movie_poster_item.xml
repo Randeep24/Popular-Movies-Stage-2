@@ -7,9 +7,9 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="5dp"
-        android:layout_margin="15dp">
+        app:cardCornerRadius="@dimen/card_radius"
+        app:cardElevation="@dimen/card_elevation"
+        android:layout_margin="@dimen/trailer_list_margin">
 
         <ImageView
             android:id="@+id/movie_poster"

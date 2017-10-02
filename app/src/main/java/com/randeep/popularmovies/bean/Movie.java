@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Randeeppulp on 9/2/17.
  */
 
-public class Movie implements Parcelable{
+public class Movie implements Parcelable {
 
     @SerializedName("id")
     private int movieId;
@@ -31,6 +31,10 @@ public class Movie implements Parcelable{
 
     @SerializedName("overview")
     private String overView;
+
+    public Movie() {
+
+    }
 
     protected Movie(Parcel in) {
         movieId = in.readInt();
@@ -70,31 +74,59 @@ public class Movie implements Parcelable{
         }
     };
 
-    public int getMovieId(){
+    public  void setMovieId(int movieId){
+        this.movieId = movieId;
+    }
+
+    public int getMovieId() {
         return movieId;
     }
 
-    public double getVoteAverage(){
+    public void setVoteAverage(double voteAverage){
+        this.voteAverage = voteAverage;
+    }
+
+    public double getVoteAverage() {
         return voteAverage;
     }
 
-    public String getMovieTitle(){
+    public void setMovieTitle(String movieTitle){
+        this.movieTitle = movieTitle;
+    }
+
+    public String getMovieTitle() {
         return movieTitle;
     }
 
-    public String getPosterPath(){
-        return "http://image.tmdb.org/t/p/w185"+posterPath;
+    public void setPosterPath(String posterPath){
+        this.posterPath = posterPath;
     }
 
-    public String getBackgroundPosterPath(){
-        return "http://image.tmdb.org/t/p/w780"+backgroundPosterPath;
+    public String getPosterPath() {
+        return posterPath;
     }
 
-    public String getReleaseDate(){
+    public void setBackgroundPosterPath(String backgroundPosterPath){
+        this.backgroundPosterPath = backgroundPosterPath;
+    }
+
+    public String getBackgroundPosterPath() {
+        return backgroundPosterPath;
+    }
+
+    public void setReleaseDate(String releaseDate){
+        this.releaseDate = releaseDate;
+    }
+
+    public String getReleaseDate() {
         return releaseDate;
     }
 
-    public String getOverView(){
+    public void setOverView(String overView){
+        this.overView = overView;
+    }
+
+    public String getOverView() {
         return overView;
     }
 

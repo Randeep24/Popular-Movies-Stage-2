@@ -25,6 +25,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.DetailActivity" />
         </activity>
+
+        <activity android:name=".activity.YoutubeVideoActivity"/>
+
+        
+        <provider
+            android:authorities="com.randeep.popularmovies"
+            android:name=".data.FavoriteMoviesProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
