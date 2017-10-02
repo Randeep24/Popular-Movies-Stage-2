@@ -26,7 +26,8 @@
                 android:value=".activity.DetailActivity" />
         </activity>
 
-        <activity android:name=".activity.YoutubeVideoActivity"/>
+        <activity android:name=".activity.YoutubeVideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
 
         
         <provider
