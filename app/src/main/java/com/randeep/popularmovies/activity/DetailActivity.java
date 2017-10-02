@@ -3,8 +3,8 @@ package com.randeep.popularmovies.activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,28 +23,23 @@ import com.randeep.popularmovies.adapter.TrailerAdapter;
 import com.randeep.popularmovies.bean.Review;
 import com.randeep.popularmovies.bean.Trailer;
 import com.randeep.popularmovies.data.FavoriteMovieContract;
+import com.randeep.popularmovies.databinding.ActivityDetailBinding;
 import com.randeep.popularmovies.network.NetworkCall;
 import com.randeep.popularmovies.utils.Constants;
 import com.randeep.popularmovies.bean.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DetailActivity extends AppCompatActivity implements NetworkCall.UpdateReviewAndTrailerList {
 
-    private ImageView backgroundImage, posterImage;
-    private TextView movieTitle, movieReleaseDate, movieVote, overview, noInternetText;
-    private TextView shareIcon, favoriteIcon, reviewText, trailerText, noReviewText;
-
-    private AppCompatRatingBar ratingBar;
-    private Toolbar toolbar;
-    private RecyclerView trailerRecyclerView, reviewRecyclerView;
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
     private List<Trailer> trailerList;
 
     private Movie movie;
+
+    ActivityDetailBinding mBinding;
 
 
     @Override
@@ -52,13 +47,14 @@ public class DetailActivity extends AppCompatActivity implements NetworkCall.Upd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
+
         Intent intent = getIntent();
         if (intent != null) {
             movie = intent.getParcelableExtra(Constants.MOVIE_DETAIL);
         }
 
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mBinding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -66,62 +62,41 @@ public class DetailActivity extends AppCompatActivity implements NetworkCall.Upd
         });
 
 
-        backgroundImage = findViewById(R.id.background_image);
-        posterImage = findViewById(R.id.movie_poster);
-
-        movieTitle = findViewById(R.id.title);
-        movieReleaseDate = findViewById(R.id.release_date);
-        movieVote = findViewById(R.id.vote_average);
-        overview = findViewById(R.id.overview);
-        favoriteIcon = findViewById(R.id.favorite);
-        shareIcon = findViewById(R.id.share);
-
-        reviewText = findViewById(R.id.review_text);
-        trailerText = findViewById(R.id.trailer_text);
-
-        ratingBar = findViewById(R.id.rating_bar);
-
-        noReviewText = findViewById(R.id.no_reviews);
-        noInternetText = findViewById(R.id.no_internet);
-
-        trailerRecyclerView = findViewById(R.id.trailer_list);
-        reviewRecyclerView = findViewById(R.id.reviewList);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        trailerRecyclerView.setHasFixedSize(true);
-        trailerRecyclerView.setLayoutManager(linearLayoutManager);
+        mBinding.trailerList.setHasFixedSize(true);
+        mBinding.trailerList.setLayoutManager(linearLayoutManager);
 
         trailerAdapter = new TrailerAdapter();
-        trailerRecyclerView.setAdapter(trailerAdapter);
+        mBinding.trailerList.setAdapter(trailerAdapter);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        reviewRecyclerView.setHasFixedSize(true);
-        reviewRecyclerView.setLayoutManager(layoutManager);
+        mBinding.reviewList.setHasFixedSize(true);
+        mBinding.reviewList.setLayoutManager(layoutManager);
 
         reviewAdapter = new ReviewAdapter();
-        reviewRecyclerView.setAdapter(reviewAdapter);
+        mBinding.reviewList.setAdapter(reviewAdapter);
 
-        Picasso.with(this).load("http://image.tmdb.org/t/p/w780" + movie.getBackgroundPosterPath()).into(backgroundImage);
-        Picasso.with(this).load("http://image.tmdb.org/t/p/w185" + movie.getPosterPath()).into(posterImage);
+        Picasso.with(this).load("http://image.tmdb.org/t/p/w780" + movie.getBackgroundPosterPath()).into(mBinding.backgroundImage);
+        Picasso.with(this).load("http://image.tmdb.org/t/p/w185" + movie.getPosterPath()).into(mBinding.moviePoster);
 
-        movieTitle.setText(movie.getMovieTitle());
-        movieReleaseDate.setText(movie.getReleaseDate());
-        movieVote.setText(String.format(getString(R.string.ratings), movie.getVoteAverage()));
-        overview.setText(movie.getOverView());
-        ratingBar.setRating((float) (movie.getVoteAverage() / 2));
+        mBinding.title.setText(movie.getMovieTitle());
+        mBinding.releaseDate.setText(movie.getReleaseDate());
+        mBinding.voteAverage.setText(String.format(getString(R.string.ratings), movie.getVoteAverage()));
+        mBinding.overview.setText(movie.getOverView());
+        mBinding.ratingBar.setRating((float) (movie.getVoteAverage() / 2));
 
         isMovieFavorite();
 
         new NetworkCall().fetchTrailerAndReviewList(this, movie.getMovieId());
 
-        favoriteIcon.setOnClickListener(new View.OnClickListener() {
+        mBinding.favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveOrDeleteFromFavorite();
             }
         });
 
-        shareIcon.setOnClickListener(new View.OnClickListener() {
+        mBinding.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (null != trailerList && trailerList.size() > 0){
@@ -144,8 +119,8 @@ public class DetailActivity extends AppCompatActivity implements NetworkCall.Upd
                     FavoriteMovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ?",
                     new String[]{movie.getMovieId()+""});
 
-            favoriteIcon.setText("\ue900");
-            favoriteIcon.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            mBinding.favorite.setText("\ue900");
+            mBinding.favorite.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
 
         } else {
 
@@ -160,8 +135,8 @@ public class DetailActivity extends AppCompatActivity implements NetworkCall.Upd
 
             getContentResolver().insert(FavoriteMovieContract.MovieEntry.CONTENT_URI, contentValues);
 
-            favoriteIcon.setText("\ue901");
-            favoriteIcon.setTextColor(Color.RED);
+            mBinding.favorite.setText("\ue901");
+            mBinding.favorite.setTextColor(Color.RED);
 
         }
 
@@ -178,8 +153,8 @@ public class DetailActivity extends AppCompatActivity implements NetworkCall.Upd
                     new String[]{movie.getMovieId() + ""}, null);
 
             if (cursor != null && cursor.moveToFirst()) {
-                favoriteIcon.setText("\ue901");
-                favoriteIcon.setTextColor(Color.RED);
+                mBinding.favorite.setText("\ue901");
+                mBinding.favorite.setTextColor(Color.RED);
                 return true;
             } else {
                 return false;
@@ -193,12 +168,12 @@ public class DetailActivity extends AppCompatActivity implements NetworkCall.Upd
 
     @Override
     public void updateReviewList(List<Review> reviewList) {
-        reviewText.setVisibility(View.VISIBLE);
+        mBinding.reviewText.setVisibility(View.VISIBLE);
         if (reviewList.size() > 0) {
-            reviewRecyclerView.setVisibility(View.VISIBLE);
+            mBinding.reviewList.setVisibility(View.VISIBLE);
             reviewAdapter.setReviewList(reviewList);
         } else {
-            noReviewText.setVisibility(View.VISIBLE);
+            mBinding.noReviews.setVisibility(View.VISIBLE);
         }
     }
 
@@ -206,8 +181,8 @@ public class DetailActivity extends AppCompatActivity implements NetworkCall.Upd
     public void updateTrailerList(List<Trailer> trailerList) {
         if (trailerList.size() > 0) {
             this.trailerList = trailerList;
-            trailerText.setVisibility(View.VISIBLE);
-            trailerRecyclerView.setVisibility(View.VISIBLE);
+            mBinding.trailerText.setVisibility(View.VISIBLE);
+            mBinding.trailerList.setVisibility(View.VISIBLE);
             trailerAdapter.setTrailerList(trailerList);
         }
     }
@@ -215,6 +190,6 @@ public class DetailActivity extends AppCompatActivity implements NetworkCall.Upd
 
     @Override
     public void showError() {
-        noInternetText.setVisibility(View.VISIBLE);
+        mBinding.noInternet.setVisibility(View.VISIBLE);
     }
 }

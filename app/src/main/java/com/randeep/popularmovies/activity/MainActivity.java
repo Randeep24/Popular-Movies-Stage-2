@@ -3,6 +3,7 @@ package com.randeep.popularmovies.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import com.randeep.popularmovies.R;
 import com.randeep.popularmovies.adapter.FavoriteMovieListAdapter;
 import com.randeep.popularmovies.data.FavoriteMovieContract;
+import com.randeep.popularmovies.databinding.ActivityMainBinding;
 import com.randeep.popularmovies.utils.Constants;
 import com.randeep.popularmovies.adapter.MoviesListAdapter;
 import com.randeep.popularmovies.bean.Movie;
@@ -41,20 +43,16 @@ import static com.randeep.popularmovies.utils.Constants.SORT_TYPE;
 public class MainActivity extends AppCompatActivity implements
         NetworkCall.UpdateMovieListView, MoviesListAdapter.MovieListItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
-    private Toolbar toolbar;
-    private RecyclerView moviesListView;
-    private ProgressBar progressBar;
-    private TextView errorText, titleTextView;
-
     private MoviesListAdapter moviesListAdapter;
     private FavoriteMovieListAdapter favoriteMovieListAdapter;
     private List<Movie> movieList;
-    private View view;
     private int spanCount = 2;
 
     private static final int FAVORITE_LOADER_ID = 24;
     private int mPosition = RecyclerView.NO_POSITION;
     private int sortingType = POPULAR;
+
+    private ActivityMainBinding mBinding;
 
 
 
@@ -65,28 +63,23 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = findViewById(R.id.toolbar);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setTitle("");
 
-        moviesListView = findViewById(R.id.movies_list);
-        view = findViewById(R.id.rectangle_shape);
-        progressBar = findViewById(R.id.progress_bar);
-        errorText = findViewById(R.id.error_message);
-        titleTextView = findViewById(R.id.title);
 
-        view.setBackground(new ShapeDrawable(new ToolbarShapeBackground()));
+        mBinding.rectangleShape.setBackground(new ShapeDrawable(new ToolbarShapeBackground()));
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             spanCount = 3;
         }
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, spanCount);
-        moviesListView.setLayoutManager(gridLayoutManager);
+        mBinding.moviesList.setLayoutManager(gridLayoutManager);
 
         moviesListAdapter = new MoviesListAdapter(this);
-        moviesListView.setAdapter(moviesListAdapter);
+        mBinding.moviesList.setAdapter(moviesListAdapter);
 
         favoriteMovieListAdapter = new FavoriteMovieListAdapter(this);
 
@@ -99,11 +92,11 @@ public class MainActivity extends AppCompatActivity implements
                 new NetworkCall().fetchMoviesList(this, Constants.POPULAR_MOVIES);
                 break;
             case HIGHEST_RATED_MOVIES:
-                titleTextView.setText(getString(R.string.top_rated));
+                mBinding.title.setText(getString(R.string.top_rated));
                 new NetworkCall().fetchMoviesList(this, Constants.HIGHEST_RATED);
                 break;
             case FAVORITE:
-                titleTextView.setText(getString(R.string.favorite));
+                mBinding.title.setText(getString(R.string.favorite));
                 getSupportLoaderManager().initLoader(FAVORITE_LOADER_ID, null, this);
                 break;
         }
@@ -114,16 +107,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void updateList(List<Movie> movieList) {
-        progressBar.setVisibility(View.GONE);
-        moviesListView.setVisibility(View.VISIBLE);
+        mBinding.progressBar.setVisibility(View.GONE);
+        mBinding.moviesList.setVisibility(View.VISIBLE);
         this.movieList = movieList;
         moviesListAdapter.setMovieList(movieList);
     }
 
     @Override
     public void showError() {
-        progressBar.setVisibility(View.GONE);
-        errorText.setVisibility(View.VISIBLE);
+        mBinding.moviesList.setVisibility(View.GONE);
+        mBinding.errorMessage.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -143,25 +136,25 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        moviesListView.setVisibility(View.GONE);
-        errorText.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        mBinding.moviesList.setVisibility(View.GONE);
+        mBinding.errorMessage.setVisibility(View.GONE);
+        mBinding.progressBar.setVisibility(View.VISIBLE);
         switch (id) {
             case R.id.action_popular:
                 checkPreviousSorting();
                 sortingType = POPULAR;
-                titleTextView.setText(getString(R.string.popular));
+                mBinding.title.setText(getString(R.string.popular));
                 new NetworkCall().fetchMoviesList(this, Constants.POPULAR_MOVIES);
                 return true;
             case R.id.action_top_rated:
                 checkPreviousSorting();
                 sortingType = HIGHEST_RATED_MOVIES;
-                titleTextView.setText(getString(R.string.top_rated));
+                mBinding.title.setText(getString(R.string.top_rated));
                 new NetworkCall().fetchMoviesList(this, Constants.HIGHEST_RATED);
                 return true;
             case R.id.action_favorite:
                 sortingType = FAVORITE;
-                titleTextView.setText(getString(R.string.favorite));
+                mBinding.title.setText(getString(R.string.favorite));
                 getSupportLoaderManager().initLoader(FAVORITE_LOADER_ID, null, this);
                 return true;
 
@@ -172,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements
     private void checkPreviousSorting() {
         if (sortingType == FAVORITE){
             getSupportLoaderManager().destroyLoader(FAVORITE_LOADER_ID);
-            moviesListView.setAdapter(moviesListAdapter);
+            mBinding.moviesList.setAdapter(moviesListAdapter);
         }
     }
 
@@ -197,10 +190,10 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         if (sortingType == FAVORITE) {
-            progressBar.setVisibility(View.GONE);
-            moviesListView.setVisibility(View.VISIBLE);
-            if (!(moviesListView.getAdapter() instanceof FavoriteMovieListAdapter)) {
-                moviesListView.setAdapter(favoriteMovieListAdapter);
+            mBinding.progressBar.setVisibility(View.GONE);
+            mBinding.moviesList.setVisibility(View.VISIBLE);
+            if (!(mBinding.moviesList.getAdapter() instanceof FavoriteMovieListAdapter)) {
+                mBinding.moviesList.setAdapter(favoriteMovieListAdapter);
             }
             favoriteMovieListAdapter.swapCursor(data);
             if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
